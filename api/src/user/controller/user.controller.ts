@@ -1,7 +1,16 @@
-import { Controller, Post, Body, Get, Param, Put } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { Observable, catchError, map, of } from 'rxjs';
 import { User } from '../models/user.interface';
+import { JwtAuthGaurd } from 'src/auth/guards/jwt-guard';
 
 @Controller('users')
 export class UserController {
@@ -27,6 +36,7 @@ export class UserController {
     return this.userService.findOne(params.id);
   }
 
+  @UseGuards(JwtAuthGaurd)
   @Get()
   findAll(): Observable<any> {
     return this.userService.findAll();
