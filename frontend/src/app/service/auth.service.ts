@@ -1,25 +1,42 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { map } from 'rxjs';
+import { User } from '../model/user.interface';
+import { JwtHelperService } from '@auth0/angular-jwt';
+export interface LoginForm {
+  email: string;
+  password: string;
+}
 
+export const JWT_NAME = 'token';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  api = 'http://localhost:3000';
+  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {}
 
-  login(email: string, password: string) {
+  login(loginForm: LoginForm) {
     return this.http
-      .post<any>('http://localhost:3000/api/users/login', {
-        email,
-        password,
+      .post<any>(`${this.api}` + '/api/users/login', {
+        email: loginForm.email,
+        password: loginForm.password,
       })
       .pipe(
         map((token) => {
           console.log('token' + token.access_token);
-          localStorage.setItem('JWT_NAME', token.access_token);
+          localStorage.setItem(JWT_NAME, token.access_token);
           return token;
         })
       );
+  }
+
+  register(user: User) {
+    return this.http.post<any>(`${this.api}` + '/api/users', user);
+  }
+
+  isAuthenticated(): boolean {
+    const token = localStorage.getItem(JWT_NAME);
+    return !this.jwtHelper.isTokenExpired(token);
   }
 }
