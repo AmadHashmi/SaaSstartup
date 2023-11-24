@@ -4,6 +4,7 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { User } from '../../model/user.interface';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
+import { environment as env } from '../../../environments/environment';
 export interface LoginForm {
   email: string;
   password: string;
@@ -14,7 +15,7 @@ export const JWT_NAME = 'token';
   providedIn: 'root',
 })
 export class AuthService {
-  api = 'http://localhost:3000';
+  api = env.apiURL;
   private userSubject = new BehaviorSubject<User | null>(null);
 
   // Observable to which components can subscribe to get updates on user changes
@@ -39,7 +40,6 @@ export class AuthService {
       })
       .pipe(
         map((token) => {
-          console.log('token' + token.access_token);
           localStorage.setItem(JWT_NAME, token.access_token);
           this.userSubject.next(this.getUserInfo());
           return token;
