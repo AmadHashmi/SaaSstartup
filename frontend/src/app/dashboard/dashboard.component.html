@@ -1,1 +1,11 @@
-<p>dashboard works!</p>
+<div *ngIf="user" class="main-div">
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title>{{ user.name }}</mat-card-title>
+      <mat-card-subtitle>{{ user.email }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Username: {{ user.username }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>

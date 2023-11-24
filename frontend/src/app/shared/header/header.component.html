@@ -2,7 +2,8 @@
   <mat-toolbar-row>
     <span routerLink="/dashboard">SaaSstartup</span>
     <span class="example-spacer"></span>
-    <a mat-button routerLink="/login">Login</a>
-    <a mat-button routerLink="/register">Register</a>
+    <a *ngIf="!user" mat-button routerLink="/login">Login</a>
+    <a *ngIf="!user" mat-button routerLink="/register">Register</a>
+    <a *ngIf="user" (click)="logout()">Logout</a>
   </mat-toolbar-row>
 </mat-toolbar>
