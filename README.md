@@ -80,6 +80,14 @@ Before you begin, ensure you have the following prerequisites installed on your 
 - Backend configuration can be found in `backend/src/config`.
 - Frontend configuration can be found in `frontend/src/environments`.
 
+## User Interface
+
+![Preview](https://github.com/AmadHashmi/SaaSstartup/blob/master/frontend/src/assets/images/dashboard.png)
+![Preview](https://github.com/AmadHashmi/SaaSstartup/blob/master/frontend/src/assets/images/login.png)
+![Preview](https://github.com/AmadHashmi/SaaSstartup/blob/master/frontend/src/assets/images/register.png)
+
+## Deployment Explanation
+
 ![Preview](https://github.com/AmadHashmi/SaaSstartup/blob/master/frontend/src/assets/images/backend.drawio.png)
 ![Preview](https://github.com/AmadHashmi/SaaSstartup/blob/master/frontend/src/assets/images/frontend.png)
 ![Preview](https://github.com/AmadHashmi/SaaSstartup/blob/master/frontend/src/assets/images/github_pages_deployment.PNG)
