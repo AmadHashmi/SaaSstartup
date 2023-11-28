@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../models/user.entity';
@@ -29,7 +34,12 @@ export class UserService {
             const { password, ...result } = user;
             return result;
           }),
-          catchError((err) => throwError(err)),
+          catchError((err) => {
+            throw new HttpException(
+              'User already exist with the same username or email',
+              HttpStatus.BAD_REQUEST,
+            );
+          }),
         );
       }),
     );
@@ -61,27 +71,35 @@ export class UserService {
           return this.authService
             .generateJWT(user)
             .pipe(map((jwt: string) => jwt));
-        } else {
-          return 'Wrong credentials';
         }
       }),
+      // ,
+      // catchError((err) => {
+      //   throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+      // }),
     );
   }
 
   validateUser(email: string, password: string): Observable<User> {
     return this.findByMail(email).pipe(
-      switchMap((user: User) =>
-        this.authService.comparePassword(password, user.password).pipe(
+      switchMap((user: User) => {
+        if (!user) {
+          throw new UnauthorizedException('Email is incorrect');
+        }
+        return this.authService.comparePassword(password, user.password).pipe(
           map((match: boolean) => {
             if (match) {
               const { password, ...result } = user;
               return result;
             } else {
-              throw Error;
+              throw new HttpException(
+                'Password is incorrect',
+                HttpStatus.UNAUTHORIZED,
+              );
             }
           }),
-        ),
-      ),
+        );
+      }),
     );
   }
 

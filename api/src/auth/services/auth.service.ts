@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/models/user.interface';
-import { Observable, from, of } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -18,6 +18,6 @@ export class AuthService {
     newPassword: string,
     passwordHash: string,
   ): Observable<any | boolean> {
-    return of<any | boolean>(bcrypt.compare(newPassword, passwordHash));
+    return from(bcrypt.compare(newPassword, passwordHash));
   }
 }

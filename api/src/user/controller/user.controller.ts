@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { User } from '../models/user.interface';
 import { JwtAuthGaurd } from 'src/auth/guards/jwt-guard';
 
@@ -19,7 +19,7 @@ export class UserController {
   create(@Body() user: User): Observable<User | any> {
     return this.userService.create(user).pipe(
       map((user: User) => user),
-      catchError((err) => of({ error: err.message })),
+      //catchError((err) => of({ error: err.message })),
     );
   }
 
