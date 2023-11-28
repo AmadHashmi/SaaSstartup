@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, map, throwError } from 'rxjs';
 import { User } from '../../model/user.interface';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
 import { environment as env } from '../../../environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 export interface LoginForm {
   email: string;
   password: string;
@@ -18,8 +19,8 @@ export class AuthService {
   api = env.apiURL;
   private userSubject = new BehaviorSubject<User | null>(null);
 
-  // Observable to which components can subscribe to get updates on user changes
   user$ = this.userSubject.asObservable();
+
   constructor(
     private http: HttpClient,
     private jwtHelper: JwtHelperService,
@@ -43,6 +44,9 @@ export class AuthService {
           localStorage.setItem(JWT_NAME, token.access_token);
           this.userSubject.next(this.getUserInfo());
           return token;
+        }),
+        catchError((err: HttpErrorResponse) => {
+          return throwError(() => err.error.message);
         })
       );
   }

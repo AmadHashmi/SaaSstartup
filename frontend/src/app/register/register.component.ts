@@ -10,6 +10,8 @@ import {
 import { AuthService } from '../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 class CustomValidators {
   static passwordContainsNumber(control: AbstractControl): ValidationErrors {
     const regex = /\d/;
@@ -27,8 +29,8 @@ class CustomValidators {
 
     if (
       password === confirmPassword &&
-      password !== null &&
-      confirmPassword !== null
+      password !== '' &&
+      confirmPassword !== ''
     ) {
       return null as any;
     } else {
@@ -47,7 +49,8 @@ export class RegisterComponent {
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private _snackbar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +66,7 @@ export class RegisterComponent {
           null,
           [
             Validators.required,
-            Validators.minLength(3),
+            Validators.minLength(6),
             CustomValidators.passwordContainsNumber,
           ],
         ],
@@ -79,10 +82,20 @@ export class RegisterComponent {
     if (this.registerForm.invalid) {
       return;
     }
-    console.log(this.registerForm.value);
-    this.authService
-      .register(this.registerForm.value)
-      .pipe(map((user) => this.router.navigate(['login'])))
-      .subscribe();
+    this.authService.register(this.registerForm.value).subscribe(
+      (user) => {
+        if (!user) {
+          return;
+        }
+        this.router.navigate(['login']);
+      },
+      (error: HttpErrorResponse) => {
+        this.openSnackBar(error.error.message);
+      }
+    );
+  }
+
+  openSnackBar(message: string) {
+    this._snackbar.open(message, 'OK');
   }
 }

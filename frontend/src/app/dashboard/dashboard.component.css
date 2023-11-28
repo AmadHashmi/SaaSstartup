@@ -1,0 +1,13 @@
+.main-div {
+  display: flex;
+  justify-content: center;
+  align-items: self-start;
+  height: 100vh;
+}
+
+.dashboard-container {
+  text-align: center;
+}
+.card {
+  width: 300px;
+}

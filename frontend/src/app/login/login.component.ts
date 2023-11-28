@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormControl,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../services/auth/auth.service';
+
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -16,8 +13,12 @@ import { AuthService } from '../services/auth/auth.service';
 })
 export class LoginComponent {
   loginForm!: FormGroup;
-
-  constructor(private authService: AuthService, private router: Router) {}
+  loginError: string = '';
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private _snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
@@ -28,7 +29,7 @@ export class LoginComponent {
       ]),
       password: new FormControl(null, [
         Validators.required,
-        Validators.minLength(3),
+        Validators.minLength(6),
       ]),
     });
   }
@@ -37,9 +38,21 @@ export class LoginComponent {
     if (this.loginForm.invalid) {
       return;
     }
-    this.authService
-      .login(this.loginForm.value)
-      .pipe(map((token) => this.router.navigate(['dashboard'])))
-      .subscribe();
+    this.authService.login(this.loginForm.value).subscribe(
+      (token) => {
+        if (!token) {
+          return;
+        }
+        this.openSnackBar('Successfully Logged In!');
+        this.router.navigate(['dashboard']);
+      },
+      (error) => {
+        this.openSnackBar(error);
+      }
+    );
+  }
+
+  openSnackBar(message: string) {
+    this._snackBar.open(message, 'OK');
   }
 }

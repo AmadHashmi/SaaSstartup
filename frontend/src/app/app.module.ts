@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   JWT_OPTIONS,
   JwtHelperService,
@@ -46,6 +47,7 @@ import { WINDOW_PROVIDERS } from './windows-token';
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
+    MatSnackBarModule,
   ],
   providers: [
     WINDOW_PROVIDERS,
